@@ -19,7 +19,6 @@ class App extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           backgroundColor: Colors.white,
-          appBar: AppBar(),
           body: _screenList.elementAt(state.navState),
           bottomNavigationBar: BottomNavigationBar(
             // TODO: How to delete BottomNavigationBar ripple effects.
