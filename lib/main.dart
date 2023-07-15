@@ -1,6 +1,7 @@
+import 'package:chanq_tistory_project/controller/bottom_nav_controller.dart';
 import 'package:chanq_tistory_project/ui/app.dart';
-import 'package:chanq_tistory_project/ui/bloc_selector_test_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +20,10 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // home: const App(),
-      home: const BlocSelectorPage(),
+      home: BlocProvider(
+        create: (context) => BottomNavController(),
+        child: App(),
+      ),
     );
   }
 }
