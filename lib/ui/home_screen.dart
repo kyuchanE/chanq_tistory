@@ -8,25 +8,27 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: How to init Bloc HomeListData.
+    // TODO chan: How to initial list item
     return RepositoryProvider(
         create: (context) => TistoryRepository(),
         child: BlocProvider(
           create: (context) =>
               HomeListController(context.read<TistoryRepository>()),
           child: Scaffold(
+            // TODO chan: need AppBar Design
             appBar: AppBar(
               title: const Text('home screen'),
               shadowColor: Colors.redAccent,
             ),
-            body: TistoryListWidget(),
+            body: const TistoryListWidget(),
           ),
         ));
   }
 }
 
+/// Home Main Data List Widget
 class TistoryListWidget extends StatelessWidget {
-  TistoryListWidget({Key? key}) : super(key: key);
+  const TistoryListWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,14 +43,47 @@ class TistoryListWidget extends StatelessWidget {
             itemCount: state.listData.length,
             itemBuilder: (BuildContext context, int index) {
               return Container(
-                child: Center(
-                  child: Text('My Data : ${state.listData[index]}'),
-                ),
-              );
+                  padding: const EdgeInsets.only(top: 10),
+                  child: TistoryListItemWidget(
+                    itemData: state.listData[index],
+                  ));
             },
           ),
         );
       },
+    );
+  }
+}
+
+/// Home Main Data List Item Widget
+class TistoryListItemWidget extends StatelessWidget {
+  String itemData;
+  TistoryListItemWidget({this.itemData = '', super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        print("GestureDetector item : $itemData");
+      },
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
+            child: Container(
+              color: Colors.amberAccent,
+              height: 80,
+              width: 80,
+            ),
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          Expanded(
+            child: Text(itemData),
+          ),
+        ],
+      ),
     );
   }
 }

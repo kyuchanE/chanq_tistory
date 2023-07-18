@@ -9,10 +9,11 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
+  // TODO chan: Navigator 2.0?
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    // TODO chan: switch MaterialApp/CupertinoApp
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(

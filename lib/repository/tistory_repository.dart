@@ -1,4 +1,5 @@
 class TistoryRepository {
+  // TODO chan need Tistory REST API
   List<String> testData = ["Test", "Tistory", "Data"];
 
   Future<List<String>> reqTistoryData() async {
