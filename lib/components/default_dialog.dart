@@ -1,12 +1,12 @@
-// TODO chan Material/Cupertino dialog
-
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void showDefaultAlertDialog(
-    BuildContext context, String title, String message) {
+  BuildContext context,
+  String title,
+  String message,
+) {
   if (Platform.isIOS) {
     showCupertinoModalPopup(
       context: context,
