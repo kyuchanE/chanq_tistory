@@ -1,5 +1,8 @@
 import 'package:chanq_tistory_project/controller/home_list_controller.dart';
+import 'package:chanq_tistory_project/controller/navigator_controller.dart';
 import 'package:chanq_tistory_project/repository/tistory_repository.dart';
+import 'package:chanq_tistory_project/ui/home_item_detail_page.dart';
+import 'package:chanq_tistory_project/ui/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,20 +12,14 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO chan: How to initial list item
-    return RepositoryProvider(
-        create: (context) => TistoryRepository(),
-        child: BlocProvider(
-          create: (context) =>
-              HomeListController(context.read<TistoryRepository>()),
-          child: Scaffold(
-            // TODO chan: need AppBar Design
-            appBar: AppBar(
-              title: const Text('home screen'),
-              shadowColor: Colors.redAccent,
-            ),
-            body: const TistoryListWidget(),
-          ),
-        ));
+    return Scaffold(
+      // TODO chan: need AppBar Design
+      appBar: AppBar(
+        title: const Text('home screen'),
+        shadowColor: Colors.redAccent,
+      ),
+      body: const TistoryListWidget(),
+    );
   }
 }
 
@@ -64,6 +61,9 @@ class TistoryListItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        context
+            .read<NavigatorController>()
+            .add(SwitchNavigatorEvent(pageName: HomeItemDetailPage.pageName));
         print("GestureDetector item : $itemData");
       },
       child: Row(

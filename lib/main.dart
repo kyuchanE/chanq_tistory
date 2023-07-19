@@ -1,5 +1,7 @@
 import 'package:chanq_tistory_project/controller/bottom_nav_controller.dart';
-import 'package:chanq_tistory_project/ui/app.dart';
+import 'package:chanq_tistory_project/controller/navigator_controller.dart';
+import 'package:chanq_tistory_project/ui/home_item_detail_page.dart';
+import 'package:chanq_tistory_project/ui/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -21,9 +23,34 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // home: const App(),
-      home: BlocProvider(
-        create: (context) => BottomNavController(),
-        child: App(),
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => BottomNavController(),
+          ),
+          BlocProvider(
+            create: (context) => NavigatorController(),
+          )
+        ],
+        child: BlocBuilder<NavigatorController, SwitchNavigatorState>(
+          builder: (context, state) {
+            return Navigator(
+              pages: [
+                MainPage(),
+                if (state.statePageName == HomeItemDetailPage.pageName)
+                  HomeItemDetailPage(),
+              ],
+              // TODO chan: onPopPage ???
+              onPopPage: (route, result) {
+                if (!route.didPop(result)) {
+                  return false;
+                } else {
+                  return true;
+                }
+              },
+            );
+          },
+        ),
       ),
     );
   }
