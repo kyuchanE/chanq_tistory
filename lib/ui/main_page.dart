@@ -13,7 +13,7 @@ class MainPage extends Page {
   @override
   Route createRoute(BuildContext context) {
     return MaterialPageRoute(
-      // TOOD chan: settings???
+      // TODO chan: settings???
       settings: this,
       builder: (context) => const MainWidget(),
     );
@@ -39,8 +39,8 @@ class MainWidget extends StatelessWidget {
 
 class BottomNavWidget extends StatelessWidget {
   final List<Widget> _screenList = <Widget>[
-    HomeScreen(),
-    SettingScreen(),
+    const HomeScreen(),
+    const SettingScreen(),
   ];
   BottomNavWidget({Key? key}) : super(key: key);
 

@@ -3,6 +3,7 @@ import 'package:chanq_tistory_project/controller/navigator_controller.dart';
 import 'package:chanq_tistory_project/repository/tistory_repository.dart';
 import 'package:chanq_tistory_project/ui/home_item_detail_page.dart';
 import 'package:chanq_tistory_project/ui/main_page.dart';
+import 'package:chanq_tistory_project/ui/search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,6 +17,16 @@ class HomeScreen extends StatelessWidget {
       // TODO chan: need AppBar Design
       appBar: AppBar(
         title: const Text('home screen'),
+        actions: <Widget>[
+          IconButton(
+            onPressed: () {
+              context
+                  .read<NavigatorController>()
+                  .add(SwitchNavigatorEvent(pageName: SearchPage.pageName));
+            },
+            icon: const Icon(Icons.search),
+          ),
+        ],
         shadowColor: Colors.redAccent,
       ),
       body: const TistoryListWidget(),

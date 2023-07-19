@@ -2,6 +2,7 @@ import 'package:chanq_tistory_project/controller/bottom_nav_controller.dart';
 import 'package:chanq_tistory_project/controller/navigator_controller.dart';
 import 'package:chanq_tistory_project/ui/home_item_detail_page.dart';
 import 'package:chanq_tistory_project/ui/main_page.dart';
+import 'package:chanq_tistory_project/ui/search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
                 MainPage(),
                 if (state.statePageName == HomeItemDetailPage.pageName)
                   HomeItemDetailPage(),
+                if (state.statePageName == SearchPage.pageName) SearchPage(),
               ],
               // TODO chan: onPopPage ???
               onPopPage: (route, result) {

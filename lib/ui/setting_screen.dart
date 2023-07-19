@@ -1,3 +1,4 @@
+import 'package:chanq_tistory_project/components/default_dialog.dart';
 import 'package:flutter/material.dart';
 
 class SettingScreen extends StatelessWidget {
@@ -7,6 +8,15 @@ class SettingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.amberAccent,
+      child: Center(
+        child: TextButton(
+          onPressed: () {
+            showDefaultAlertDialog(
+                context, 'Test Title', 'Hello Flutter World!!');
+          },
+          child: const Text('Show Dialog'),
+        ),
+      ),
     );
   }
 }
