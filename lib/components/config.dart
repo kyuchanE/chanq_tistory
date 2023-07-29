@@ -7,4 +7,10 @@ class CQConfig {
 
   Uri getPostListTistoryUri() => Uri.parse(
       "${baseUrlTistory}${postListTistory}?access_token=${accessTokenTistory}&output=json&blogName=${nameTistory}");
+
+  static const baseUrlRandomUser = 'https://randomuser.me/api';
+  static const resultsCount = '/?results';
+
+  Uri getRandomUserUri(int cnt) =>
+      Uri.parse('$baseUrlRandomUser$resultsCount=$cnt');
 }

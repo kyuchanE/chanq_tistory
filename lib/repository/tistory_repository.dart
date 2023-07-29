@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:chanq_tistory_project/components/config.dart';
+import '../model/RandomUserData.dart';
 import '../model/tistory_post_list_data.dart';
 import 'package:http/http.dart' as http;
 
@@ -21,5 +22,16 @@ class TistoryRepository {
     }
 
     return postListData;
+  }
+
+  Future<RandomUserData> reqRandomUserData() async {
+    RandomUserData data = RandomUserData(null, null);
+
+    final response = await http.get(CQConfig().getRandomUserUri(10));
+    if (response.statusCode == 200) {
+      data = RandomUserData.fromJson(jsonDecode(response.body));
+    }
+
+    return data;
   }
 }

@@ -1,13 +1,15 @@
 import 'package:bloc/bloc.dart';
+import 'package:chanq_tistory_project/model/RandomUserData.dart';
 import 'package:equatable/equatable.dart';
 import '../repository/tistory_repository.dart';
 
 class HomeListController extends Bloc<HomeListEvent, HomeListState> {
   TistoryRepository _tistoryRepository;
-  HomeListController(this._tistoryRepository) : super(HomeListState()) {
+  HomeListController(this._tistoryRepository)
+      : super(HomeListState(RandomUserData(null, null))) {
     on<ReqHomeListDataEvent>((event, emit) async {
-      var result = await _tistoryRepository.reqTistoryData();
-      emit(HomeListState(listData: result));
+      var result = await _tistoryRepository.reqRandomUserData();
+      emit(HomeListState(result));
     });
   }
 
@@ -25,12 +27,12 @@ class ReqHomeListDataEvent extends HomeListEvent {
 }
 
 class HomeListState extends Equatable {
-  List<String> listData = [];
-  HomeListState({this.listData = const []});
+  RandomUserData data = RandomUserData(null, null);
+  HomeListState(this.data);
 
-  HomeListState clone({List<String>? listData}) =>
-      HomeListState(listData: listData ?? this.listData);
+  HomeListState clone({RandomUserData? data}) =>
+      HomeListState(data ?? this.data);
 
   @override
-  List<Object?> get props => [listData];
+  List<Object?> get props => [data];
 }

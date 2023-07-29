@@ -1,5 +1,6 @@
 import 'package:chanq_tistory_project/controller/home_list_controller.dart';
 import 'package:chanq_tistory_project/controller/navigator_controller.dart';
+import 'package:chanq_tistory_project/model/RandomUserData.dart';
 import 'package:chanq_tistory_project/repository/tistory_repository.dart';
 import 'package:chanq_tistory_project/ui/home_item_detail_page.dart';
 import 'package:chanq_tistory_project/ui/main_page.dart';
@@ -48,13 +49,17 @@ class TistoryListWidget extends StatelessWidget {
           },
           child: ListView.builder(
             padding: const EdgeInsets.all(8),
-            itemCount: state.listData.length,
+            itemCount:
+                state.data.results != null ? state.data.results!.length : 0,
             itemBuilder: (BuildContext context, int index) {
               return Container(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: TistoryListItemWidget(
-                    itemData: state.listData[index],
-                  ));
+                padding: const EdgeInsets.only(top: 10),
+                child: state.data.results != null
+                    ? TistoryListItemWidget(
+                        state.data.results![index],
+                      )
+                    : const TistoryListWidget(),
+              );
             },
           ),
         );
@@ -65,8 +70,8 @@ class TistoryListWidget extends StatelessWidget {
 
 /// Home Main Data List Item Widget
 class TistoryListItemWidget extends StatelessWidget {
-  String itemData;
-  TistoryListItemWidget({this.itemData = '', super.key});
+  Results? itemData;
+  TistoryListItemWidget(this.itemData, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -78,22 +83,23 @@ class TistoryListItemWidget extends StatelessWidget {
         print("GestureDetector item : $itemData");
       },
       child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8.0),
-            child: Container(
-              color: Colors.amberAccent,
-              height: 80,
-              width: 80,
-            ),
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-          Expanded(
-            child: Text(itemData),
-          ),
-        ],
+        children: itemData != null
+            ? [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Image.network(
+                    itemData!.picture!.medium!,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: Text(itemData!.email!),
+                ),
+              ]
+            : [],
       ),
     );
   }
