@@ -13,31 +13,35 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // TODO chan: need AppBar Design
-      appBar: AppBar(
-        title: const Text('home screen'),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              context
-                  .read<NavigatorController>()
-                  .add(SwitchNavigatorEvent(pageName: SearchPage.pageName));
-            },
-            icon: const Icon(Icons.search),
-          ),
-        ],
-        shadowColor: Colors.redAccent,
-      ),
-      body: TistoryListWidget(),
-    );
+    return BlocBuilder<HomeListController, HomeListState>(
+        builder: (context, state) {
+      return Scaffold(
+        // TODO chan: need AppBar Design
+        appBar: AppBar(
+          title: const Text('home screen'),
+          actions: <Widget>[
+            IconButton(
+              onPressed: () {
+                context
+                    .read<NavigatorController>()
+                    .add(SwitchNavigatorEvent(pageName: SearchPage.pageName));
+              },
+              icon: const Icon(Icons.search),
+            ),
+          ],
+          shadowColor: Colors.redAccent,
+        ),
+        body: TistoryListWidget(isLoading: state.data.isLoading),
+      );
+    });
   }
 }
 
 /// Home Main Data List Widget
 class TistoryListWidget extends StatelessWidget {
   ScrollController scrollController = ScrollController();
-  TistoryListWidget({Key? key}) : super(key: key);
+  bool isLoading = false;
+  TistoryListWidget({this.isLoading = false, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -50,10 +54,15 @@ class TistoryListWidget extends StatelessWidget {
           child: ListView.builder(
             controller: scrollController
               ..addListener(() {
-                if (scrollController.position.maxScrollExtent - 200 <=
+                if (scrollController.position.maxScrollExtent <=
                         scrollController.offset &&
+                    scrollController.position.maxScrollExtent > 0 &&
                     !scrollController.position.outOfRange &&
-                    !state.data.isLoading) {
+                    !isLoading) {
+                  isLoading = true;
+                  context
+                      .read<HomeListController>()
+                      .add(LoadingHomeListDataEvent());
                   context
                       .read<HomeListController>()
                       .add(ReqHomeListDataEvent());
@@ -66,6 +75,7 @@ class TistoryListWidget extends StatelessWidget {
                 : 0,
             itemBuilder: (BuildContext context, int index) {
               return Container(
+                // TODO chan add loading widget
                 padding: const EdgeInsets.only(top: 10),
                 child: state.data.userData != null
                     ? TistoryListItemWidget(

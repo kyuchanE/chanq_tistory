@@ -9,10 +9,27 @@ class HomeListController extends Bloc<HomeListEvent, HomeListState> {
 
   HomeListController(this._tistoryRepository) : super(HomeListState()) {
     on<ReqHomeListDataEvent>((event, emit) async {
-      state.data.isLoading = true;
-      state.data.page++;
       var result = await _tistoryRepository.reqRandomUserData();
-      emit(state.emitData(result));
+
+      if (state.data.userData != null) {
+        List<Results>? resultsData = state.data.userData!.results;
+        if (resultsData != null) {
+          if (result.results != null) {
+            resultsData.addAll(result.results!.toList());
+            result.results = resultsData;
+          }
+        }
+      }
+
+      emit(
+          HomeListState.clone(result, loading: false, page: state.data.page++));
+    });
+
+    on<LoadingHomeListDataEvent>((event, emit) {
+      if (state.data.userData != null) {
+        emit(HomeListState.clone(state.data.userData!,
+            loading: true, page: state.data.page++));
+      }
     });
   }
 
@@ -29,26 +46,26 @@ class ReqHomeListDataEvent extends HomeListEvent {
   ReqHomeListDataEvent();
 }
 
+class LoadingHomeListDataEvent extends HomeListEvent {
+  LoadingHomeListDataEvent();
+}
+
 class HomeListState extends Equatable {
   HomeListStateData data = HomeListStateData();
 
   HomeListState();
+  HomeListState.clone(RandomUserData userData,
+      {bool loading = false, int page = 0}) {
+    data =
+        HomeListStateData(userData: userData, isLoading: loading, page: page);
+  }
+
+  HomeListState emitIsLoading(bool loadingState) {
+    data.isLoading = true;
+    return this;
+  }
 
   HomeListState emitData(RandomUserData responseData) {
-    if (data.userData != null) {
-      List<Results>? resultsData = data.userData!.results;
-      if (resultsData == null) {
-        data.userData!.results = responseData.results;
-      } else {
-        if (responseData.results != null) {
-          resultsData.addAll(responseData.results!.toList());
-          data.userData!.results = resultsData;
-        }
-      }
-    } else {
-      data.userData = responseData;
-    }
-    data.isLoading = false;
     return this;
   }
 
