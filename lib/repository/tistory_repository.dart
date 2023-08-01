@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:chanq_tistory_project/components/config.dart';
-import '../model/RandomUserData.dart';
+import '../model/random_user_data.dart';
 import '../model/tistory_post_list_data.dart';
 import 'package:http/http.dart' as http;
 

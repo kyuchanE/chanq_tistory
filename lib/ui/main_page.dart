@@ -39,7 +39,7 @@ class MainWidget extends StatelessWidget {
 
 class BottomNavWidget extends StatelessWidget {
   final List<Widget> _screenList = <Widget>[
-    const HomeScreen(),
+    HomeScreen(),
     const SettingScreen(),
   ];
   BottomNavWidget({Key? key}) : super(key: key);

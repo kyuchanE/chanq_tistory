@@ -4,7 +4,7 @@ import 'package:chanq_tistory_project/ui/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../model/RandomUserData.dart';
+import '../model/random_user_data.dart';
 
 class SearchPage extends Page {
   static const pageName = 'SEARCH_PAGE';
@@ -28,9 +28,9 @@ class SearchWidget extends StatelessWidget {
       builder: (context, state) {
         return GestureDetector(
           onTap: () async {
-            // context
-            //     .read<NavigatorController>()
-            //     .add(SwitchNavigatorEvent(pageName: MainPage.pageName));
+            context
+                .read<NavigatorController>()
+                .add(SwitchNavigatorEvent(pageName: MainPage.pageName));
             RandomUserData data = await repository.reqRandomUserData();
           },
           child: Container(

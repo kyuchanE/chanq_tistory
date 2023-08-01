@@ -1,15 +1,18 @@
 import 'package:bloc/bloc.dart';
-import 'package:chanq_tistory_project/model/RandomUserData.dart';
+import 'package:chanq_tistory_project/model/random_user_data.dart';
 import 'package:equatable/equatable.dart';
+import '../model/home_list_state_data.dart';
 import '../repository/tistory_repository.dart';
 
 class HomeListController extends Bloc<HomeListEvent, HomeListState> {
-  TistoryRepository _tistoryRepository;
-  HomeListController(this._tistoryRepository)
-      : super(HomeListState(RandomUserData(null, null))) {
+  final TistoryRepository _tistoryRepository;
+
+  HomeListController(this._tistoryRepository) : super(HomeListState()) {
     on<ReqHomeListDataEvent>((event, emit) async {
+      state.data.isLoading = true;
+      state.data.page++;
       var result = await _tistoryRepository.reqRandomUserData();
-      emit(HomeListState(result));
+      emit(state.emitData(result));
     });
   }
 
@@ -27,11 +30,27 @@ class ReqHomeListDataEvent extends HomeListEvent {
 }
 
 class HomeListState extends Equatable {
-  RandomUserData data = RandomUserData(null, null);
-  HomeListState(this.data);
+  HomeListStateData data = HomeListStateData();
 
-  HomeListState clone({RandomUserData? data}) =>
-      HomeListState(data ?? this.data);
+  HomeListState();
+
+  HomeListState emitData(RandomUserData responseData) {
+    if (data.userData != null) {
+      List<Results>? resultsData = data.userData!.results;
+      if (resultsData == null) {
+        data.userData!.results = responseData.results;
+      } else {
+        if (responseData.results != null) {
+          resultsData.addAll(responseData.results!.toList());
+          data.userData!.results = resultsData;
+        }
+      }
+    } else {
+      data.userData = responseData;
+    }
+    data.isLoading = false;
+    return this;
+  }
 
   @override
   List<Object?> get props => [data];

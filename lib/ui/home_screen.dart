@@ -1,6 +1,6 @@
 import 'package:chanq_tistory_project/controller/home_list_controller.dart';
 import 'package:chanq_tistory_project/controller/navigator_controller.dart';
-import 'package:chanq_tistory_project/model/RandomUserData.dart';
+import 'package:chanq_tistory_project/model/random_user_data.dart';
 import 'package:chanq_tistory_project/repository/tistory_repository.dart';
 import 'package:chanq_tistory_project/ui/home_item_detail_page.dart';
 import 'package:chanq_tistory_project/ui/main_page.dart';
@@ -13,7 +13,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO chan: How to initial list item
     return Scaffold(
       // TODO chan: need AppBar Design
       appBar: AppBar(
@@ -30,14 +29,15 @@ class HomeScreen extends StatelessWidget {
         ],
         shadowColor: Colors.redAccent,
       ),
-      body: const TistoryListWidget(),
+      body: TistoryListWidget(),
     );
   }
 }
 
 /// Home Main Data List Widget
 class TistoryListWidget extends StatelessWidget {
-  const TistoryListWidget({Key? key}) : super(key: key);
+  ScrollController scrollController = ScrollController();
+  TistoryListWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -48,17 +48,30 @@ class TistoryListWidget extends StatelessWidget {
             context.read<HomeListController>().add(ReqHomeListDataEvent());
           },
           child: ListView.builder(
+            controller: scrollController
+              ..addListener(() {
+                if (scrollController.position.maxScrollExtent - 200 <=
+                        scrollController.offset &&
+                    !scrollController.position.outOfRange &&
+                    !state.data.isLoading) {
+                  context
+                      .read<HomeListController>()
+                      .add(ReqHomeListDataEvent());
+                }
+              }),
+            physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.all(8),
-            itemCount:
-                state.data.results != null ? state.data.results!.length : 0,
+            itemCount: state.data.userData != null
+                ? state.data.userData!.results!.length
+                : 0,
             itemBuilder: (BuildContext context, int index) {
               return Container(
                 padding: const EdgeInsets.only(top: 10),
-                child: state.data.results != null
+                child: state.data.userData != null
                     ? TistoryListItemWidget(
-                        state.data.results![index],
+                        state.data.userData!.results![index],
                       )
-                    : const TistoryListWidget(),
+                    : Container(),
               );
             },
           ),
@@ -102,5 +115,31 @@ class TistoryListItemWidget extends StatelessWidget {
             : [],
       ),
     );
+  }
+}
+
+class StatefulWrapper extends StatefulWidget {
+  final Function onInit;
+  final Widget child;
+
+  const StatefulWrapper({required this.onInit, required this.child, Key? key})
+      : super(key: key);
+
+  @override
+  State<StatefulWrapper> createState() => _StatefulWrapperState();
+}
+
+class _StatefulWrapperState extends State<StatefulWrapper> {
+  @override
+  void initState() {
+    if (widget.onInit != null) {
+      widget.onInit();
+    }
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
   }
 }
