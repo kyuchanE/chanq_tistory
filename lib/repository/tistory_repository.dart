@@ -26,8 +26,8 @@ class TistoryRepository {
 
   Future<RandomUserData> reqRandomUserData() async {
     RandomUserData data = RandomUserData(null, null);
-
-    final response = await http.get(CQConfig().getRandomUserUri(10));
+    await Future.delayed(Duration(milliseconds: 2000));
+    final response = await http.get(CQConfig().getRandomUserUri(15));
     if (response.statusCode == 200) {
       data = RandomUserData.fromJson(jsonDecode(response.body));
     }

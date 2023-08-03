@@ -38,10 +38,40 @@ class HomeScreen extends StatelessWidget {
 }
 
 /// Home Main Data List Widget
-class TistoryListWidget extends StatelessWidget {
-  ScrollController scrollController = ScrollController();
+class TistoryListWidget extends StatefulWidget {
   bool isLoading = false;
+  ScrollController scrollController = ScrollController();
   TistoryListWidget({this.isLoading = false, Key? key}) : super(key: key);
+
+  @override
+  State<TistoryListWidget> createState() => _TistoryListWidgetState();
+}
+
+class _TistoryListWidgetState extends State<TistoryListWidget> {
+  ScrollController _listScrollController(
+          BuildContext context, HomeListState state) =>
+      widget.scrollController
+        ..addListener(() {
+          if (widget.scrollController.position.maxScrollExtent <=
+                  widget.scrollController.offset &&
+              widget.scrollController.position.maxScrollExtent > 0 &&
+              !widget.scrollController.position.outOfRange &&
+              !widget.isLoading) {
+            widget.isLoading = true;
+            context.read<HomeListController>().add(LoadingHomeListDataEvent());
+            context.read<HomeListController>().add(ReqHomeListDataEvent());
+          }
+        });
+
+  @override
+  void initState() {
+    context.read<HomeListController>().add(ReqHomeListDataEvent());
+  }
+
+  @override
+  void dispose() {
+    widget.scrollController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,39 +81,30 @@ class TistoryListWidget extends StatelessWidget {
           onRefresh: () async {
             context.read<HomeListController>().add(ReqHomeListDataEvent());
           },
-          child: ListView.builder(
-            controller: scrollController
-              ..addListener(() {
-                if (scrollController.position.maxScrollExtent <=
-                        scrollController.offset &&
-                    scrollController.position.maxScrollExtent > 0 &&
-                    !scrollController.position.outOfRange &&
-                    !isLoading) {
-                  isLoading = true;
-                  context
-                      .read<HomeListController>()
-                      .add(LoadingHomeListDataEvent());
-                  context
-                      .read<HomeListController>()
-                      .add(ReqHomeListDataEvent());
-                }
-              }),
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.all(8),
-            itemCount: state.data.userData != null
-                ? state.data.userData!.results!.length
-                : 0,
-            itemBuilder: (BuildContext context, int index) {
-              return Container(
-                // TODO chan add loading widget
-                padding: const EdgeInsets.only(top: 10),
-                child: state.data.userData != null
-                    ? TistoryListItemWidget(
-                        state.data.userData!.results![index],
-                      )
-                    : Container(),
-              );
-            },
+          child: Scrollbar(
+            controller: _listScrollController(context, state),
+            child: ListView.builder(
+              controller: _listScrollController(context, state),
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(8),
+              itemCount: state.data.userData != null
+                  ? (state.data.isLoading
+                      ? state.data.userData!.results!.length + 1
+                      : state.data.userData!.results!.length)
+                  : 0,
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: state.data.userData != null
+                      ? (index == state.data.userData!.results!.length
+                          ? const LoadingWidget()
+                          : TistoryListItemWidget(
+                              state.data.userData!.results![index],
+                            ))
+                      : Container(),
+                );
+              },
+            ),
           ),
         );
       },
@@ -128,28 +149,16 @@ class TistoryListItemWidget extends StatelessWidget {
   }
 }
 
-class StatefulWrapper extends StatefulWidget {
-  final Function onInit;
-  final Widget child;
-
-  const StatefulWrapper({required this.onInit, required this.child, Key? key})
-      : super(key: key);
-
-  @override
-  State<StatefulWrapper> createState() => _StatefulWrapperState();
-}
-
-class _StatefulWrapperState extends State<StatefulWrapper> {
-  @override
-  void initState() {
-    if (widget.onInit != null) {
-      widget.onInit();
-    }
-    super.initState();
-  }
+//TODO chan need UI
+class LoadingWidget extends StatelessWidget {
+  const LoadingWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return widget.child;
+    return Container(
+      color: Colors.amber,
+      width: 40,
+      height: 40,
+    );
   }
 }
