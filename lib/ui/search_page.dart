@@ -26,24 +26,29 @@ class SearchWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<NavigatorController, SwitchNavigatorState>(
       builder: (context, state) {
-        return Stack(
-          children: [
-            GestureDetector(
-              onTap: () async {
-                context
-                    .read<NavigatorController>()
-                    .add(SwitchNavigatorEvent(pageName: MainPage.pageName));
-                RandomUserData data = await repository.reqRandomUserData();
-              },
-              child: Container(
-                color: Colors.deepPurple[200],
-              ),
+        return Scaffold(
+          backgroundColor: Colors.deepPurple[200],
+          floatingActionButton: ExpandableFab(
+            distance: 112,
+            children: [],
+          ),
+          body: SafeArea(
+            child: Stack(
+              children: [
+                GestureDetector(
+                  onTap: () async {
+                    context
+                        .read<NavigatorController>()
+                        .add(SwitchNavigatorEvent(pageName: MainPage.pageName));
+                    RandomUserData data = await repository.reqRandomUserData();
+                  },
+                  child: Container(
+                    color: Colors.deepPurple[200],
+                  ),
+                ),
+              ],
             ),
-            ExpandableFab(
-              distance: 112,
-              children: [],
-            ),
-          ],
+          ),
         );
       },
     );
@@ -133,6 +138,7 @@ class _ExpandableFabState extends State<ExpandableFab> {
           curve: const Interval(0.25, 1.0, curve: Curves.easeInOut),
           duration: const Duration(milliseconds: 250),
           child: FloatingActionButton(
+            shape: const CircleBorder(),
             onPressed: _toggle,
             child: const Icon(Icons.create),
           ),
