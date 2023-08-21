@@ -31,6 +31,9 @@ class HomeScreen extends StatelessWidget {
           ],
           shadowColor: Colors.redAccent,
         ),
+        floatingActionButton: HomeScreenFAB(
+          children: [],
+        ),
         body: TistoryListWidget(isLoading: state.data.isLoading),
       );
     });
@@ -159,6 +162,123 @@ class LoadingWidget extends StatelessWidget {
       color: Colors.amber,
       width: 40,
       height: 40,
+    );
+  }
+}
+
+class HomeScreenFAB extends StatefulWidget {
+  bool? initExpanded;
+  bool? initOpenMenu;
+  List<Widget> children;
+
+  HomeScreenFAB({
+    Key? key,
+    this.initExpanded,
+    this.initOpenMenu,
+    required this.children,
+  });
+
+  @override
+  State<HomeScreenFAB> createState() => _HomeScreenFABState();
+}
+
+class _HomeScreenFABState extends State<HomeScreenFAB> {
+  bool _isExpanded = true;
+  bool _isOpenMenu = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _isExpanded = widget.initExpanded ?? true;
+    _isOpenMenu = widget.initOpenMenu ?? false;
+  }
+
+  void toggleExpanded() {
+    setState(() {
+      _isExpanded = !_isExpanded;
+    });
+  }
+
+  void toggleOpenMenu() {
+    setState(() {
+      _isOpenMenu = !_isOpenMenu;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.bottomRight,
+      children: [
+        _collapsedFab(),
+        _expandedFab(),
+      ],
+    );
+  }
+
+  Widget _collapsedFab() {
+    return GestureDetector(
+      onTap: toggleExpanded,
+      child: Container(
+        width: 46,
+        height: 46,
+        decoration: BoxDecoration(
+          color: Colors.amber,
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  Widget _expandedFab() {
+    return IgnorePointer(
+      ignoring: !_isExpanded,
+      child: AnimatedContainer(
+        transformAlignment: Alignment.centerRight,
+        transform: Matrix4.diagonal3Values(
+          _isExpanded ? 1.0 : 0.2,
+          1.0,
+          1.0,
+        ),
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeInOut,
+        child: AnimatedOpacity(
+          opacity: _isExpanded ? 1.0 : 0.0,
+          duration: const Duration(milliseconds: 150),
+          curve: const Interval(0.5, 1.0, curve: Curves.ease),
+          child: GestureDetector(
+            onTap: toggleExpanded,
+            child: Container(
+              width: 110,
+              height: 46,
+              decoration: BoxDecoration(
+                color: Colors.amber,
+                borderRadius: BorderRadius.circular(350),
+              ),
+              child: SizedBox.expand(
+                child: AnimatedOpacity(
+                  opacity: _isExpanded ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 10),
+                  curve: Curves.easeInOut,
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.add,
+                        color: Colors.white,
+                      ),
+                      Text('Text'),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
